@@ -55,7 +55,7 @@ export const ProfileHeader = styled.div`
       cursor: pointer;
       border-bottom: 2px solid ${(props) => props.theme.colors["standard-blue"]};
 
-      transition: 0.5s;
+      transition: 0.6s;
     }
   }
 `;

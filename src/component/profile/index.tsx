@@ -24,7 +24,10 @@ export function Profile() {
       <ProfileMain>
         <ProfileHeader>
           <strong>Cameron Williamson</strong>
-          <a href="https://fontawesome.com/icons/arrow-up-right-from-square?f=classic&s=solid">
+          <a
+            href="https://fontawesome.com/icons/arrow-up-right-from-square?f=classic&s=solid"
+            target="_blanked"
+          >
             GITHUB
             <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
           </a>
