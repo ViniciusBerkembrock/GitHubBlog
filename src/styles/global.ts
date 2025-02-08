@@ -16,6 +16,7 @@ export const GlobalStyle = createGlobalStyle`
 
     body, input, textarea, button {
     ${mixins.fonts.textM};
+    line-height: 160%;
     }
     
     button {
