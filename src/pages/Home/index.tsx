@@ -1,128 +1,40 @@
+import { useContext, useEffect } from "react";
 import { Profile } from "../../component/profile";
 import { SearchBar } from "../../component/searchBar";
-import { PostContainer, Post } from "./styles";
+import { PostContainer, Post, Spinner, SpinnerWrapper } from "./styles";
+import { dateFormatter } from "../../component/utils/formatter";
+import { ApiContext } from "../../context/ApiContext";
 
 export function Home() {
+  const { getIssues, issues, isLoading } = useContext(ApiContext);
+
+  useEffect(() => {
+    getIssues();
+  });
+
   return (
     <>
       <Profile />
       <SearchBar />
 
       <PostContainer>
-        <Post>
-          <div>
-            <strong>JavaScript data types and data structure</strong>
-            <span>Há 1 dia</span>
-          </div>
-          <p>
-            Programming languages all have built-in data structures, but these
-            often differ from one language to another. This article attempts to
-            list the built-in data structures available in JavaScript and what
-            properties they have. These can be used to build other data
-            structures. Wherever possible, comparisons with other languages are
-            drawn. Dynamic typing JavaScript is a loosely typed and dynamic
-            language. Variables in JavaScript are not directly associated with
-            any particular value type, and any variable can be assigned (and
-            re-assigned) values of all types: let foo = 42; // foo is now a
-            number foo = 'bar'; // foo is now a string foo = true; // foo is now
-            a boolean
-          </p>
-        </Post>{" "}
-        <Post>
-          <div>
-            <strong>JavaScript data types and data structure</strong>
-            <span>Há 1 dia</span>
-          </div>
-          <p>
-            Programming languages all have built-in data structures, but these
-            often differ from one language to another. This article attempts to
-            list the built-in data structures available in JavaScript and what
-            properties they have. These can be used to build other data
-            structures. Wherever possible, comparisons with other languages are
-            drawn. Dynamic typing JavaScript is a loosely typed and dynamic
-            language. Variables in JavaScript are not directly associated with
-            any particular value type, and any variable can be assigned (and
-            re-assigned) values of all types: let foo = 42; // foo is now a
-            number foo = 'bar'; // foo is now a string foo = true; // foo is now
-            a boolean
-          </p>
-        </Post>{" "}
-        <Post>
-          <div>
-            <strong>JavaScript data types and data structure</strong>
-            <span>Há 1 dia</span>
-          </div>
-          <p>
-            Programming languages all have built-in data structures, but these
-            often differ from one language to another. This article attempts to
-            list the built-in data structures available in JavaScript and what
-            properties they have. These can be used to build other data
-            structures. Wherever possible, comparisons with other languages are
-            drawn. Dynamic typing JavaScript is a loosely typed and dynamic
-            language. Variables in JavaScript are not directly associated with
-            any particular value type, and any variable can be assigned (and
-            re-assigned) values of all types: let foo = 42; // foo is now a
-            number foo = 'bar'; // foo is now a string foo = true; // foo is now
-            a boolean
-          </p>
-        </Post>{" "}
-        <Post>
-          <div>
-            <strong>JavaScript data types and data structure</strong>
-            <span>Há 1 dia</span>
-          </div>
-          <p>
-            Programming languages all have built-in data structures, but these
-            often differ from one language to another. This article attempts to
-            list the built-in data structures available in JavaScript and what
-            properties they have. These can be used to build other data
-            structures. Wherever possible, comparisons with other languages are
-            drawn. Dynamic typing JavaScript is a loosely typed and dynamic
-            language. Variables in JavaScript are not directly associated with
-            any particular value type, and any variable can be assigned (and
-            re-assigned) values of all types: let foo = 42; // foo is now a
-            number foo = 'bar'; // foo is now a string foo = true; // foo is now
-            a boolean
-          </p>
-        </Post>{" "}
-        <Post>
-          <div>
-            <strong>JavaScript data types and data structure</strong>
-            <span>Há 1 dia</span>
-          </div>
-          <p>
-            Programming languages all have built-in data structures, but these
-            often differ from one language to another. This article attempts to
-            list the built-in data structures available in JavaScript and what
-            properties they have. These can be used to build other data
-            structures. Wherever possible, comparisons with other languages are
-            drawn. Dynamic typing JavaScript is a loosely typed and dynamic
-            language. Variables in JavaScript are not directly associated with
-            any particular value type, and any variable can be assigned (and
-            re-assigned) values of all types: let foo = 42; // foo is now a
-            number foo = 'bar'; // foo is now a string foo = true; // foo is now
-            a boolean
-          </p>
-        </Post>{" "}
-        <Post>
-          <div>
-            <strong>JavaScript data types and data structure</strong>
-            <span>Há 1 dia</span>
-          </div>
-          <p>
-            Programming languages all have built-in data structures, but these
-            often differ from one language to another. This article attempts to
-            list the built-in data structures available in JavaScript and what
-            properties they have. These can be used to build other data
-            structures. Wherever possible, comparisons with other languages are
-            drawn. Dynamic typing JavaScript is a loosely typed and dynamic
-            language. Variables in JavaScript are not directly associated with
-            any particular value type, and any variable can be assigned (and
-            re-assigned) values of all types: let foo = 42; // foo is now a
-            number foo = 'bar'; // foo is now a string foo = true; // foo is now
-            a boolean
-          </p>
-        </Post>
+        {isLoading ? (
+          <SpinnerWrapper>
+            <Spinner />
+          </SpinnerWrapper>
+        ) : (
+          issues?.map((issue) => {
+            return (
+              <Post key={issue.id}>
+                <div>
+                  <strong>{issue.title}</strong>
+                  <span>{dateFormatter(new Date(issue.updated_at))}</span>
+                </div>
+                <p>{issue.body}</p>
+              </Post>
+            );
+          })
+        )}
       </PostContainer>
     </>
   );
