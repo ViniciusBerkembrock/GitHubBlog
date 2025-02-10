@@ -58,4 +58,16 @@ export const SearchBarForm = styled.form`
       color: ${(props) => props.theme.colors["base-label"]}
     }
   }
+
+  button {
+    background-color: ${(props) => props.theme.colors["base-input"]};
+    margin-left: 12px;
+    color: ${(props) => props.theme.colors["base-text"]};
+    border: 1px solid ${(props) => props.theme.colors["base-border"]};
+    border-radius: 6px;
+
+    padding: 0px 20px;
+
+    height: 54px;
+  }
 `;
