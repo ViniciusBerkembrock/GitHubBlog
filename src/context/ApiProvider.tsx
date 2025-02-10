@@ -91,26 +91,6 @@ export function ApiProvider({ children }: ApiProviderProps) {
     }
   }
 
-  // async function getIssuesWithAxios() {
-  //   try {
-  //     const response = await axios.get(
-  //       "https://api.github.com/repos/ViniciusBerkembrock/GitHubBlog/issues",
-  //       {
-  //         headers: {
-  //           Authorization: `token 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`,
-  //           Accept: "application/vnd.github.v3+json",
-  //         },
-  //       }
-  //     );
-
-  //     setIssues(response.data);
-  //     return response;
-  //   } catch (error) {
-  //     console.error("Erro ao buscar issues:", error);
-  //     return [];
-  //   }
-  // }
-
   const getIssuesWithAxios = useCallback(async () => {
     try {
       setIsLoading(true);

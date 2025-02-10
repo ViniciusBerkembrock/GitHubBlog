@@ -4,9 +4,12 @@ import { SearchBar } from "../../component/searchBar";
 import { PostContainer, Post, Spinner, SpinnerWrapper } from "./styles";
 import { dateFormatter } from "../../component/utils/formatter";
 import { ApiContext } from "../../context/ApiContext";
+import { useNavigate } from "react-router-dom";
 
 export function Home() {
   const { getIssues, issues, isLoading } = useContext(ApiContext);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     getIssues();
@@ -25,7 +28,10 @@ export function Home() {
         ) : (
           issues?.map((issue) => {
             return (
-              <Post key={issue.id}>
+              <Post
+                key={issue.id}
+                onClick={() => navigate(`/issue/${issue.id}/details`)}
+              >
                 <div>
                   <strong>{issue.title}</strong>
                   <span>{dateFormatter(new Date(issue.updated_at))}</span>

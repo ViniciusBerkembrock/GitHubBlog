@@ -47,9 +47,9 @@ export const PostHeader = styled.div`
   display: flex;
   justify-content: space-between;
 
-  color: ${(props) => props.theme.colors["standard-blue"]};
-
   a {
+    text-decoration: none;
+    color: ${(props) => props.theme.colors["standard-blue"]};
     display: flex;
     align-items: center;
     gap: 10px;
