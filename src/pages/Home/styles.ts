@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { mixins } from "../../styles/mixins";
 
 export const PostContainer = styled.div`
@@ -54,8 +54,30 @@ export const Post = styled.div`
   p {
     ${mixins.fonts.textM};
     display: -webkit-box;
-    -webkit-line-clamp: 5; /* Define o número máximo de linhas */
+    -webkit-line-clamp: 5;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+`;
+
+export const spin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
+export const SpinnerWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  background-color: transparent;
+`;
+
+export const Spinner = styled.div`
+  width: 50px;
+  height: 50px;
+  border: 4px solid #3498db;
+  border-top: 4px solid transparent;
+  border-radius: 50%;
+  animation: ${spin} 1s linear infinite;
 `;
