@@ -1,17 +1,32 @@
-import { useState, FocusEvent } from "react";
+import { useState, useContext } from "react";
 import { SearchBarContainer, SearchBarForm } from "./styles";
+import { useForm } from "react-hook-form";
+
+import * as zod from "zod";
+import { ApiContext } from "../../context/ApiContext";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const searchFormSchema = zod.object({ query: zod.string() });
+
+type SearchFormInputs = zod.infer<typeof searchFormSchema>;
 
 export function SearchBar() {
   const [isFocused, setIsFocused] = useState(false);
+  const { searchIssueWithOctokit } = useContext(ApiContext);
+  const { register, handleSubmit } = useForm<SearchFormInputs>({
+    resolver: zodResolver(searchFormSchema),
+  });
 
-  function handleOnFocus(event: FocusEvent<HTMLInputElement, Element>) {
+  function handleOnFocus() {
     setIsFocused(true);
-    console.log(event);
   }
 
-  function handleOnBlur(event: FocusEvent<HTMLInputElement, Element>) {
+  function handleOnBlur() {
     setIsFocused(false);
-    console.log(event);
+  }
+
+  async function handleSearchIssue(data: SearchFormInputs) {
+    await searchIssueWithOctokit(data.query);
   }
 
   return (
@@ -21,16 +36,20 @@ export function SearchBar() {
         <span>6 publicações</span>
       </div>
 
-      <SearchBarForm action="">
+      <SearchBarForm id="pesquisa" onSubmit={handleSubmit(handleSearchIssue)}>
         <label data-state={isFocused ? "onFocus" : "onBlur"}>
           <input
             id="content"
             type="text"
             placeholder="Buscar conteúdo"
             onFocus={handleOnFocus}
+            {...register("query")}
             onBlur={handleOnBlur}
           />
         </label>
+        <button type="submit" form="pesquisa">
+          PROCURAR
+        </button>
       </SearchBarForm>
     </SearchBarContainer>
   );

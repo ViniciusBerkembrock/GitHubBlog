@@ -4,77 +4,49 @@ import { octokit } from "../lib/octokit";
 import axios from "axios";
 import { ApiContext } from "./ApiContext";
 
-export type GitHubIssue = {
-  id: number;
-  node_id: string;
-  url: string;
-  repository_url: string;
-  labels_url: string;
-  comments_url: string;
-  events_url: string;
-  html_url: string;
-  number: number;
-  state: "open" | "closed";
-  title: string;
-  body: string | null;
-  user: {
-    login: string;
-    id: number;
-    node_id: string;
-    avatar_url: string;
-    html_url: string;
-    type: string;
-  };
-  labels: {
-    id: number;
-    node_id: string;
-    url: string;
-    name: string;
-    color: string;
-    default: boolean;
-    description: string | null;
-  }[];
-  assignee: {
-    login: string;
-    id: number;
-    node_id: string;
-    avatar_url: string;
-    html_url: string;
-    type: string;
-  } | null;
-  assignees: {
-    login: string;
-    id: number;
-    node_id: string;
-    avatar_url: string;
-    html_url: string;
-    type: string;
-  }[];
-  milestone: {
-    url: string;
-    html_url: string;
-    labels_url: string;
-    id: number;
-    node_id: string;
-    title: string;
-    description: string | null;
-    state: "open" | "closed";
-    open_issues: number;
-    closed_issues: number;
-  } | null;
-  comments: number;
-  created_at: string;
-  updated_at: string;
-  closed_at: string | null;
-  author_association: string;
-};
-
 interface ApiProviderProps {
   children: ReactNode;
 }
 
+export interface GitHubIssue {
+  id: number;
+  number: number;
+  title: string;
+  body: string | null;
+  state: "open" | "closed";
+  created_at: string;
+  updated_at: string;
+  html_url: string;
+  labels: {
+    id: number;
+    name: string;
+    color: string;
+  }[];
+  user: {
+    login: string;
+    avatar_url: string;
+    html_url: string;
+  };
+  comments: number;
+  reactions: {
+    url: string;
+    total_count: number;
+    "+1": number;
+    "-1": number;
+    laugh: number;
+    hooray: number;
+    confused: number;
+    heart: number;
+    rocket: number;
+    eyes: number;
+  };
+  repository_url: string;
+}
+
+const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN;
+
 export function ApiProvider({ children }: ApiProviderProps) {
-  const [issues, setIssues] = useState([]);
+  const [issues, setIssues] = useState<GitHubIssue[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   async function getIssues() {
@@ -91,26 +63,6 @@ export function ApiProvider({ children }: ApiProviderProps) {
     }
   }
 
-  // async function getIssuesWithAxios() {
-  //   try {
-  //     const response = await axios.get(
-  //       "https://api.github.com/repos/ViniciusBerkembrock/GitHubBlog/issues",
-  //       {
-  //         headers: {
-  //           Authorization: `token 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`,
-  //           Accept: "application/vnd.github.v3+json",
-  //         },
-  //       }
-  //     );
-
-  //     setIssues(response.data);
-  //     return response;
-  //   } catch (error) {
-  //     console.error("Erro ao buscar issues:", error);
-  //     return [];
-  //   }
-  // }
-
   const getIssuesWithAxios = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -118,7 +70,7 @@ export function ApiProvider({ children }: ApiProviderProps) {
         "https://api.github.com/repos/ViniciusBerkembrock/GitHubBlog/issues",
         {
           headers: {
-            Authorization: `token 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`,
+            Authorization: `token ${GITHUB_TOKEN}`,
             Accept: "application/vnd.github.v3+json",
           },
         }
@@ -139,9 +91,28 @@ export function ApiProvider({ children }: ApiProviderProps) {
     getIssuesWithAxios();
   }, [getIssuesWithAxios]);
 
+  const searchIssueWithOctokit = useCallback(async (param: string) => {
+    setIsLoading(true);
+    const searchResult = await octokit.rest.search.issuesAndPullRequests({
+      q: `${param} repo:ViniciusBerkembrock/GitHubBlog is:issue `,
+    });
+
+    setIssues(searchResult.data.items);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+    setIsLoading(false);
+  }, []);
+
   return (
     <ApiContext.Provider
-      value={{ getIssues, getIssuesWithAxios, issues, isLoading }}
+      value={{
+        getIssues,
+        getIssuesWithAxios,
+        issues,
+        isLoading,
+        searchIssueWithOctokit,
+      }}
     >
       {children}
     </ApiContext.Provider>

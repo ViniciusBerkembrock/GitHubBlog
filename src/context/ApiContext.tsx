@@ -6,5 +6,6 @@ export interface CreateContextType {
   getIssuesWithAxios: () => void;
   issues: GitHubIssue[] | undefined;
   isLoading: boolean;
+  searchIssueWithOctokit: (param: string) => void;
 }
 export const ApiContext = createContext({} as CreateContextType);
