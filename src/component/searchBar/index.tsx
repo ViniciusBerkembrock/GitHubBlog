@@ -3,8 +3,9 @@ import { SearchBarContainer, SearchBarForm } from "./styles";
 import { useForm } from "react-hook-form";
 
 import * as zod from "zod";
-import { ApiContext } from "../../context/ApiContext";
+// import { ApiContext } from "../../context/ApiContext";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { IssuesContext } from "../../context/IssueContextExport";
 
 const searchFormSchema = zod.object({ query: zod.string() });
 
@@ -12,7 +13,8 @@ type SearchFormInputs = zod.infer<typeof searchFormSchema>;
 
 export function SearchBar() {
   const [isFocused, setIsFocused] = useState(false);
-  const { searchIssueWithOctokit } = useContext(ApiContext);
+  // const { searchIssueWithOctokit } = useContext(ApiContext);
+  const { SearchIssuesWithAxios } = useContext(IssuesContext);
   const { register, handleSubmit } = useForm<SearchFormInputs>({
     resolver: zodResolver(searchFormSchema),
   });
@@ -26,7 +28,7 @@ export function SearchBar() {
   }
 
   async function handleSearchIssue(data: SearchFormInputs) {
-    await searchIssueWithOctokit(data.query);
+    await SearchIssuesWithAxios(data.query);
   }
 
   return (

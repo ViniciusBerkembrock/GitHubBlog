@@ -21,7 +21,6 @@ export function PostComplete() {
 
   if (issues) {
     issueToDetail = issues.find((issue) => issue.id === Number(idIssue));
-    console.log(issueToDetail);
   }
 
   return (

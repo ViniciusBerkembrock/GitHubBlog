@@ -4,14 +4,17 @@ import { GlobalStyle } from "./styles/global";
 import { BrowserRouter } from "react-router-dom";
 import { Router } from "./Router";
 import { ApiProvider } from "./context/ApiProvider";
+import { IssueProvider } from "./context/IssueContext";
 
 function App() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <ApiProvider>
-        <BrowserRouter>
-          <Router />
-        </BrowserRouter>
+        <IssueProvider>
+          <BrowserRouter>
+            <Router />
+          </BrowserRouter>
+        </IssueProvider>
       </ApiProvider>
       <GlobalStyle />
     </ThemeProvider>
