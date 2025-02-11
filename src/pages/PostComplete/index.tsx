@@ -9,12 +9,12 @@ import {
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { useNavigate, useParams } from "react-router-dom";
 import { useContext } from "react";
-import { ApiContext } from "../../context/ApiContext";
 import { dateFormatter } from "../../component/utils/formatter";
+import { IssuesContext } from "../../context/IssueContextExport";
 
 export function PostComplete() {
   const { idIssue } = useParams();
-  const { issues } = useContext(ApiContext);
+  const { issues } = useContext(IssuesContext);
   const navigate = useNavigate();
 
   let issueToDetail;
@@ -31,7 +31,7 @@ export function PostComplete() {
             <FontAwesomeIcon icon={faChevronLeft} size="lg" />
             VOLTAR
           </a>
-          <a href={issueToDetail?.html_url} target="_blank">
+          <a href={issueToDetail?.link} target="_blank">
             VER NO GITHUB
             <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
           </a>
@@ -40,17 +40,17 @@ export function PostComplete() {
         <div>
           <span>
             <FontAwesomeIcon icon={faGithub} size="lg" />
-            {issueToDetail ? issueToDetail.user.login : <p> Carregando </p>}
+            {issueToDetail ? issueToDetail.user : <p> Carregando </p>}
           </span>
           <span>
             <FontAwesomeIcon icon={faCalendarDays} />
             {issueToDetail
-              ? dateFormatter(new Date(issueToDetail.updated_at))
+              ? dateFormatter(new Date(issueToDetail.createdAt))
               : "Carregando"}
           </span>
           <span>
             <FontAwesomeIcon icon={faComment} />
-            {issueToDetail ? issueToDetail.comments : "Carregando"}
+            {issueToDetail ? issueToDetail.comments : "Carregando"} Comentários
           </span>
         </div>
       </PostInfo>

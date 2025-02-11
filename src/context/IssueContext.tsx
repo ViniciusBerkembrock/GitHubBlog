@@ -11,6 +11,7 @@ export interface Issue {
   user: string;
   avatar: string | undefined;
   createdAt: string;
+  comments: number;
 }
 
 interface IssueProviderProps {
@@ -22,7 +23,8 @@ interface MinimalGitHubIssue {
   body: string | null;
   html_url: string;
   title: string;
-  createdAt: string;
+  created_at: string;
+  comments: number;
   user?: {
     login: string;
     avatar_url: string;
@@ -50,6 +52,7 @@ export function IssueProvider({ children }: IssueProviderProps) {
         user: issue.user?.login || "Not Found",
         avatar: issue.user?.avatar_url,
         createdAt: issue.created_at,
+        comments: issue.comments,
       }));
 
       setNewIssues(fetchedIssues);
@@ -77,11 +80,12 @@ export function IssueProvider({ children }: IssueProviderProps) {
         title: issue.title,
         user: issue.user?.login || "Not Found",
         avatar: issue.user?.avatar_url,
-        createdAt: issue.createdAt,
+        createdAt: issue.created_at,
+        comments: issue.comments,
       }));
 
       setNewIssues(fetchedIssues);
-      console.log(issues);
+      console.log("aqui: ", response.data);
     } catch (error) {
       console.error("Erro ao buscar issues:", error);
       return [];
@@ -93,39 +97,36 @@ export function IssueProvider({ children }: IssueProviderProps) {
     getIssuesWithAxios();
   }, [getIssuesWithAxios]);
 
-  const SearchIssuesWithAxios = useCallback(
-    async (query?: string) => {
-      setIsLoading(true);
-      if (query) {
-        try {
-          const response = await api.get(
-            `https://api.github.com/search/issues?q=${query}%20repo:ViniciusBerkembrock/GitHubBlog`
-          );
+  const SearchIssuesWithAxios = useCallback(async (query?: string) => {
+    setIsLoading(true);
+    if (query) {
+      try {
+        const response = await api.get(
+          `https://api.github.com/search/issues?q=${query}%20repo:ViniciusBerkembrock/GitHubBlog`
+        );
 
-          const fetchedIssues: Issue[] = response.data.items.map(
-            (issue: MinimalGitHubIssue) => ({
-              id: Number(issue.id),
-              body: issue.body,
-              link: issue.html_url,
-              title: issue.title,
-              user: issue.user?.login || "Not Found",
-              avatar: issue.user?.avatar_url,
-              createdAt: issue.createdAt,
-            })
-          );
+        const fetchedIssues: Issue[] = response.data.items.map(
+          (issue: MinimalGitHubIssue) => ({
+            id: Number(issue.id),
+            body: issue.body,
+            link: issue.html_url,
+            title: issue.title,
+            user: issue.user?.login || "Not Found",
+            avatar: issue.user?.avatar_url,
+            createdAt: issue.created_at,
+            comments: issue.comments,
+          })
+        );
 
-          setFilteredIssues(fetchedIssues);
-        } catch (error) {
-          console.error("Erro ao buscar issues:", error);
-        }
-      } else {
-        setFilteredIssues([]);
-        // getIssuesWithAxios();
+        setFilteredIssues(fetchedIssues);
+      } catch (error) {
+        console.error("Erro ao buscar issues:", error);
       }
-      setIsLoading(false);
-    },
-    [getIssuesWithAxios]
-  );
+    } else {
+      setFilteredIssues([]);
+    }
+    setIsLoading(false);
+  }, []);
 
   return (
     <IssuesContext.Provider
